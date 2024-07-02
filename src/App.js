@@ -1,23 +1,47 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from "react";
+import questions from "./constants/questions.json";
+import Question from './components/Question';
+import Result from './components/Result';
 
 function App() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+
+  const handleNextQuestion = (isCorrect) => {
+    setCurrentQuestion(currentQuestion + 1);
+    setUserAnswers([...userAnswers,isCorrect]);
+  }
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setUserAnswers([]);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>World Quiz</h1>
+
+      {/* Questions Component */}
+      {
+        currentQuestion < questions.length && (
+          <Question
+               question = {questions[currentQuestion]}
+               onAnswerClick = {handleNextQuestion}
+          />
+        )
+      }
+
+      {/* Result Component */}
+      {
+        currentQuestion === questions.length && (
+          <Result
+               userAnswers = {userAnswers}
+               questions = {questions}
+               resetQuiz = {resetQuiz}
+          />
+        )
+      }
     </div>
   );
 }
